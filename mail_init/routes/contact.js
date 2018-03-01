@@ -6,12 +6,19 @@ var csrfProtection = csurf({cookie: true});
 require('dotenv').config();
 router.get('/', csrfProtection, function (req, res) {
   console.log(process.env.gmailUser);
-  res.render('contact', {csrfToken: req.csrfToken()});
+  res.render('contact', {
+    csrfToken: req.csrfToken(),
+    errors: req.flash('errors')
+  });
 });
 router.get('/review', function (req, res) {
   res.render('contactReview');
 });
 router.post('/post', csrfProtection, function (req, res) {
+  if (req.body.username === '') {
+    req.flash('errors', '姓名不可為空');
+    res.redirect('/contact');
+  }
   var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {

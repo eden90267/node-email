@@ -3,6 +3,8 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var flash = require('connect-flash');
 var bodyParser = require('body-parser');
 var app = express();
 // view engine setup
@@ -14,6 +16,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+  secret: 'mysupercat',
+  resave: true, // 儲存記憶體的機制
+  saveUninitialized: true
+}));
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
